@@ -2,10 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Liverating</title>
+  <title>Live Rating</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyBfi6Dg-momKkKgI0q806vLBYwWqjpDX1g",
+      authDomain: "liverating-78a70.firebaseapp.com",
+      projectId: "liverating-78a70",
+      storageBucket: "liverating-78a70.appspot.com",
+      messagingSenderId: "40985037255",
+      appId: "1:40985037255:web:87359e9cf18405474b31e2"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </head>
 <body>
   <app-root></app-root>
