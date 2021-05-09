@@ -58,6 +58,34 @@ export class InMemHeroService implements InMemoryDbService {
                 votes: 100,
                 category: 'movies'
 
+            },
+            {
+                id: 8,
+                name: 'movie 3',
+                votes: 100,
+                category: 'movies'
+
+            },
+            {
+                id: 9,
+                name: 'movie 3',
+                votes: 100,
+                category: 'movies'
+
+            },
+            {
+                id: 10,
+                name: 'movie 3',
+                votes: 100,
+                category: 'movies'
+
+            },
+            {
+                id: 11,
+                name: 'movie 3',
+                votes: 100,
+                category: 'movies'
+
             }
         ];
         return { list };
