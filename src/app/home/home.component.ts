@@ -1,11 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
+  @ViewChild('addCategoryItemInput') addCategoryItemInput: ElementRef;
 
   public categories: string[] = [
     'games',
@@ -14,10 +18,15 @@ export class HomeComponent implements OnInit {
     'manga'
   ]
 
-  isLoading: boolean = false;
-  currentCategory: string = '';
+
+  public isLoading: boolean = false;
+  public currentCategory: BehaviorSubject<string>;
+
+  public inputPlaceholder: string;
 
   public list: AppModel[] = [];
+
+
 
   constructor(private http: HttpClient) {
 
@@ -25,7 +34,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.categories = this.categories.sort();
-    this.currentCategory = this.categories[0];
+    this.currentCategory = new BehaviorSubject<string>(this.categories[0]);
+    this.currentCategory.subscribe(currentCategory => {
+      currentCategory = currentCategory.charAt(currentCategory.length - 1) === 's' ? currentCategory.substring(0, currentCategory.length - 1) : currentCategory;
+      this.inputPlaceholder = `Enter a ${currentCategory}`;
+    });
     this.list = this.list.sort((a, b) => b.votes - a.votes)
 
     this.isLoading = true;
@@ -52,12 +65,17 @@ export class HomeComponent implements OnInit {
   }
 
   changeCategory(category: string): void {
-    this.currentCategory = category;
+    this.currentCategory.next(category);
     this.isLoading = true;
     this.http.get('api/list').subscribe((list: AppModel[]) => {
       this.list = list.filter(a => a.category === category).sort((a, b) => b.votes - a.votes);;
       this.isLoading = false;
     });
+  }
+
+  addCategoryItem(item: string): void {
+    this.addCategoryItemInput.nativeElement.value = '';
+    //post to mock backend
   }
 
 }
