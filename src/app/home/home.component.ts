@@ -41,14 +41,7 @@ export class HomeComponent implements OnInit {
     });
     this.list = this.list.sort((a, b) => b.votes - a.votes)
 
-    this.isLoading = true;
-    this.http.get('api/list').subscribe((list: AppModel[]) => {
-      this.list = list
-        .filter(item => item.category === this.categories[0])
-        .sort((a, b) => b.votes - a.votes);
-
-      this.isLoading = false;
-    });
+    this.fetchList();
   }
 
   vote(id: number, upvote: boolean): void {
@@ -64,6 +57,15 @@ export class HomeComponent implements OnInit {
     this.list = this.list.sort((a, b) => b.votes - a.votes);
   }
 
+  fetchList(): void {
+    this.isLoading = true;
+    this.http.get('api/list').subscribe((list: AppModel[]) => {
+      this.list = list.filter(item => item.category === this.categories[0])
+        .sort((a, b) => b.votes - a.votes);
+      this.isLoading = false;
+    });
+  }
+
   changeCategory(category: string): void {
     this.currentCategory.next(category);
     this.isLoading = true;
@@ -75,7 +77,34 @@ export class HomeComponent implements OnInit {
 
   addCategoryItem(item: string): void {
     this.addCategoryItemInput.nativeElement.value = '';
-    //post to mock backend
+    let totalObjects: number;
+
+    let exists = false;
+    this.http.get('/api/list').subscribe((list: AppModel[]) => {
+      totalObjects = list.length
+      console.log(list);
+      for(let i = 0; i < totalObjects; i++){
+        if(list[i].name === item){
+          exists = true;
+          break;
+        }
+      }
+    });
+    console.log(1)
+    if(exists){
+      console.log(2)
+      return;
+    }
+    console.log(3)
+
+    const obj: AppModel = {
+      id: totalObjects + 1,
+      name: item,
+      category: this.currentCategory.value,
+      votes: 0
+    }
+    this.http.post('/api/list', obj).subscribe(res => console.log(res));
+    this.fetchList();
   }
 
 }
