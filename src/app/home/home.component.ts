@@ -51,8 +51,8 @@ export class HomeComponent implements OnInit {
     else
       item.votes--;
 
-    this.http.post('api/list', item).subscribe(_ => {
-      
+    this.http.post('api/list', item).subscribe(res => {
+      console.log(res);
     });
     this.list = this.list.sort((a, b) => b.votes - a.votes);
   }
@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit {
   fetchList(): void {
     this.isLoading = true;
     this.http.get('api/list').subscribe((list: AppModel[]) => {
-      this.list = list.filter(item => item.category === this.categories[0])
+      this.list = list.filter(item => item.category === this.currentCategory.value)
         .sort((a, b) => b.votes - a.votes);
       this.isLoading = false;
     });
@@ -77,28 +77,8 @@ export class HomeComponent implements OnInit {
 
   addCategoryItem(item: string): void {
     this.addCategoryItemInput.nativeElement.value = '';
-    let totalObjects: number;
-
-    let exists = false;
-    this.http.get('/api/list').subscribe((list: AppModel[]) => {
-      totalObjects = list.length
-      console.log(list);
-      for(let i = 0; i < totalObjects; i++){
-        if(list[i].name === item){
-          exists = true;
-          break;
-        }
-      }
-    });
-    console.log(1)
-    if(exists){
-      console.log(2)
-      return;
-    }
-    console.log(3)
 
     const obj: AppModel = {
-      id: totalObjects + 1,
       name: item,
       category: this.currentCategory.value,
       votes: 0
@@ -110,7 +90,7 @@ export class HomeComponent implements OnInit {
 }
 
 export interface AppModel {
-  id: number;
+  id?: number;
   name: string,
   votes: number;
   category: string;
